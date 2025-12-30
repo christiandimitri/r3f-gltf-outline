@@ -102,32 +102,32 @@ class FindSurfaces {
         explored[n] = true
         const newNeighbors = getNeighbors(n, explored)
         result = result.concat(newNeighbors)
-      }
+  }
 
       return result
     }
 
     function getNeighborsNonRecursive(node: number): number[] {
-      const frontier = [node]
-      const explored: { [key: number]: boolean } = {}
-      const result: number[] = []
+    const frontier = [node]
+    const explored: { [key: number]: boolean } = {}
+    const result: number[] = []
 
-      while (frontier.length > 0) {
-        const currentNode = frontier.pop()!
-        if (explored[currentNode]) continue
-        const neighbors = vertexMap[currentNode]
-        result.push(currentNode)
+    while (frontier.length > 0) {
+      const currentNode = frontier.pop()!
+      if (explored[currentNode]) continue
+      const neighbors = vertexMap[currentNode]
+      result.push(currentNode)
 
-        explored[currentNode] = true
+      explored[currentNode] = true
 
-        for (const n of neighbors) {
-          if (!explored[n]) {
-            frontier.push(n)
-          }
+      for (const n of neighbors) {
+        if (!explored[n]) {
+          frontier.push(n)
         }
       }
+    }
 
-      return result
+    return result
     }
 
     return vertexIdToSurfaceId
@@ -149,12 +149,12 @@ export function getSurfaceIdMaterial() {
 
 function getVertexShader() {
   return `
-  varying vec2 v_uv;
-  varying vec4 vColor;
+      varying vec2 v_uv;
+      varying vec4 vColor;
 
-  void main() {
-     v_uv = uv;
-we      // Three.js automatically provides 'color' attribute when vertexColors: true
+      void main() {
+         v_uv = uv;
+     // Three.js automatically provides 'color' attribute when vertexColors: true
      // Handle both vec3 (from fragments) and vec4 (our surface ID) color attributes
      // USE_COLOR_ALPHA is set by Three.js based on attribute itemSize
      #ifdef USE_COLOR
@@ -170,24 +170,24 @@ we      // Three.js automatically provides 'color' attribute when vertexColors: 
        vColor = vec4(1.0, 1.0, 1.0, 1.0);
      #endif
 
-     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
+         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
   `
 }
 
 function getFragmentShader() {
   return `
-  varying vec2 v_uv;
-  varying vec4 vColor;
-  uniform float maxSurfaceId;
+      varying vec2 v_uv;
+      varying vec4 vColor;
+      uniform float maxSurfaceId;
 
-  void main() {
-    // Normalize the surfaceId when writing to texture
-    // Surface ID needs rounding as precision can be lost in perspective correct interpolation 
-    // - see https://github.com/OmarShehata/webgl-outlines/issues/9 for other solutions eg. flat interpolation.
-    float surfaceId = round(vColor.r) / maxSurfaceId;
-    gl_FragColor = vec4(surfaceId, 0.0, 0.0, 1.0);
-  }
+      void main() {
+        // Normalize the surfaceId when writing to texture
+        // Surface ID needs rounding as precision can be lost in perspective correct interpolation 
+        // - see https://github.com/OmarShehata/webgl-outlines/issues/9 for other solutions eg. flat interpolation.
+        float surfaceId = round(vColor.r) / maxSurfaceId;
+        gl_FragColor = vec4(surfaceId, 0.0, 0.0, 1.0);
+      }
   `
 }
 
@@ -198,18 +198,18 @@ export function getDebugSurfaceIdMaterial() {
     uniforms: {},
     vertexShader: getVertexShader(),
     fragmentShader: `
-  varying vec2 v_uv;
-  varying vec4 vColor;
+      varying vec2 v_uv;
+      varying vec4 vColor;
 
-  void main() {      
-      int surfaceId = int(round(vColor.r) * 100.0);
-      float R = float(surfaceId % 255) / 255.0;
-      float G = float((surfaceId + 50) % 255) / 255.0;
-      float B = float((surfaceId * 20) % 255) / 255.0;
+      void main() {      
+          int surfaceId = int(round(vColor.r) * 100.0);
+          float R = float(surfaceId % 255) / 255.0;
+          float G = float((surfaceId + 50) % 255) / 255.0;
+          float B = float((surfaceId * 20) % 255) / 255.0;
 
-      gl_FragColor = vec4(R, G, B, 1.0);
-  }
-  `,
+          gl_FragColor = vec4(R, G, B, 1.0);
+      }
+    `,
     vertexColors: true,
   })
 }
