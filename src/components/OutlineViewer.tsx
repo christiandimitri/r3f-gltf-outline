@@ -71,6 +71,10 @@ export default function OutlineViewer({
     scene.traverse((node) => {
       if (node.type === 'Mesh') {
         const mesh = node as THREE.Mesh
+        // Remove existing color attribute if it exists (might be vec3 from GLTF)
+        if (mesh.geometry.hasAttribute('color')) {
+          mesh.geometry.deleteAttribute('color')
+        }
         const colorsTypedArray = surfaceFinder.getSurfaceIdAttribute(mesh)
         mesh.geometry.setAttribute(
           'color',

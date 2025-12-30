@@ -154,7 +154,21 @@ function getVertexShader() {
 
   void main() {
      v_uv = uv;
-     vColor = color;
+we      // Three.js automatically provides 'color' attribute when vertexColors: true
+     // Handle both vec3 (from fragments) and vec4 (our surface ID) color attributes
+     // USE_COLOR_ALPHA is set by Three.js based on attribute itemSize
+     #ifdef USE_COLOR
+       #ifdef USE_COLOR_ALPHA
+         // Color is vec4 (itemSize: 4) - use directly to preserve alpha (surface ID)
+         vColor = color;
+       #else
+         // Color is vec3 (itemSize: 3) - convert to vec4 with alpha = 1.0
+         vColor = vec4(color, 1.0);
+       #endif
+     #else
+       // No color attribute, use default
+       vColor = vec4(1.0, 1.0, 1.0, 1.0);
+     #endif
 
      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }

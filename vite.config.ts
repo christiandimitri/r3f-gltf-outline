@@ -13,7 +13,11 @@ export default defineConfig({
       '@': '/src'
     }
   },
-  assetsInclude: ['**/*.vert', '**/*.frag']
+  assetsInclude: ['**/*.vert', '**/*.frag'],
+  optimizeDeps: {
+    include: ['@thatopen/fragments'],
+    exclude: []
+  }
 })
 
 
