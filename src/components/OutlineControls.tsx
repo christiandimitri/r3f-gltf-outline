@@ -10,6 +10,8 @@ interface OutlineControlsProps {
   normalMult: number
   cameraNear: number
   cameraFar: number
+  thresholdAngle?: number
+  isWelded?: boolean
   onModeChange: (value: number) => void
   onOutlineColorChange: (value: string) => void
   onDepthBiasChange: (value: number) => void
@@ -18,6 +20,9 @@ interface OutlineControlsProps {
   onNormalMultChange: (value: number) => void
   onCameraNearChange: (value: number) => void
   onCameraFarChange: (value: number) => void
+  onThresholdAngleChange?: (value: number) => void
+  onWeldVertices?: () => void
+  onReset?: () => void
 }
 
 const MODE_OPTIONS = {
@@ -249,6 +254,7 @@ export default function OutlineControls({
               </div>
             </label>
           </div>
+
         </div>
       )}
     </div>
